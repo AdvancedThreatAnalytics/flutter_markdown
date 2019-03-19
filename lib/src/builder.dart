@@ -257,11 +257,11 @@ class MarkdownBuilder implements md.NodeVisitor {
     }
 
     Uri uri = Uri.parse(path);
+    uri = uri.replace(query: uri.query.replaceAll('&amp;', '&'));
     Widget child;
     if (uri.scheme == 'http' || uri.scheme == 'https') {
       child = new Image.network(uri.toString(), width: width, height: height);
     } else if (uri.scheme == 'data') {
-      uri = uri.replace(query: uri.query.replaceAll('&amp;', '&'));
       child = _handleDataSchemeUri(uri, width, height);
     } else if (uri.scheme == "resource") {
       child = new Image.asset(path.substring(9), width: width, height: height);
