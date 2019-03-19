@@ -257,9 +257,13 @@ class MarkdownBuilder implements md.NodeVisitor {
     }
 
     Uri uri = Uri.parse(path);
+    // this is done for URIs with `GET` params that get converted from
+    // http://example.com/?param1=1&param2=2 to
+    // http://example.com/?param1=1&amp;param2=2 by Dart's Uri.parse
+    uri = uri.replace(query: uri.query.replaceAll('&amp;', '&'));
     Widget child;
     if (uri.scheme == 'http' || uri.scheme == 'https') {
-      child = new Image.network(uri, width: width, height: height);
+      child = new Image.network(uri.toString(), width: width, height: height);
     } else if (uri.scheme == 'data') {
       child = _handleDataSchemeUri(uri, width, height);
     } else if (uri.scheme == "resource") {
